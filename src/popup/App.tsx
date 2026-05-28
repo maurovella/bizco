@@ -6,9 +6,9 @@ function send(message: Message): Promise<StatusResponse> {
 }
 
 export function App() {
-  const [status, setStatus] = useState<CameraStatus>({ active: false, framesSent: 0 })
+  const [status, setStatus] = useState<CameraStatus>({ active: false })
 
-  // Poll status while the popup is open so the frame counter stays live.
+  // Poll del estado mientras el popup está abierto, para indicadores en vivo.
   useEffect(() => {
     let mounted = true
     const refresh = async () => {
@@ -16,7 +16,7 @@ export function App() {
       if (mounted && s) setStatus(s)
     }
     void refresh()
-    const id = window.setInterval(refresh, 1000)
+    const id = window.setInterval(refresh, 500)
     return () => {
       mounted = false
       clearInterval(id)
@@ -24,8 +24,8 @@ export function App() {
   }, [])
 
   /**
-   * Open the dedicated permission tab. Requesting from the popup itself fails
-   * with "Permission dismissed" because clicking the prompt closes the popup.
+   * Abre el tab dedicado de permiso. Pedirlo desde el popup falla con
+   * "Permission dismissed" porque el clic en el prompt cierra el popup.
    */
   const grantPermission = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL('src/permission/index.html') })
@@ -33,25 +33,46 @@ export function App() {
 
   const start = async () => setStatus(await send({ type: 'START_CAMERA', target: 'background' }))
   const stop = async () => setStatus(await send({ type: 'STOP_CAMERA', target: 'background' }))
+  const calibrar = () => void send({ type: 'CALIBRAR', target: 'background' })
+
+  const denegado = status.permiso === 'denegado'
 
   return (
     <main className="popup">
-      <h1>Bizco</h1>
+      <h1>Bizco 👀</h1>
 
       <div className={`status ${status.active ? 'on' : 'off'}`}>
         <span className="dot" />
-        {status.active ? 'Camera active' : 'Camera stopped'}
+        {status.active ? 'Cámara activa' : 'Cámara apagada'}
       </div>
 
-      <p className="counter">Frames sent: {status.framesSent}</p>
-      {status.error && <p className="error">{status.error}</p>}
+      {/* Indicadores en vivo */}
+      <dl className="metrics">
+        <div>
+          <dt>Distancia (ancho px)</dt>
+          <dd>{status.ancho ? Math.round(status.ancho) : '—'}</dd>
+        </div>
+        <div>
+          <dt>Postura</dt>
+          <dd>{status.encorvado ? 'Encorvado 🙇' : 'OK ✅'}</dd>
+        </div>
+        <div>
+          <dt>Nivel Bizco</dt>
+          <dd>{status.nivel ?? 0}</dd>
+        </div>
+      </dl>
+
+      {denegado && <p className="error">Permiso de cámara denegado.</p>}
+      {status.error && !denegado && <p className="error">{status.error}</p>}
 
       <div className="actions">
-        <button onClick={start} disabled={status.active}>Start</button>
-        <button onClick={stop} disabled={!status.active}>Stop</button>
+        <button onClick={start} disabled={status.active}>Activar</button>
+        <button onClick={stop} disabled={!status.active}>Desactivar</button>
       </div>
 
-      <button className="link" onClick={grantPermission}>Grant camera permission…</button>
+      <button onClick={calibrar} disabled={!status.active}>Calibrar</button>
+
+      <button className="link" onClick={grantPermission}>Conceder permiso de cámara…</button>
     </main>
   )
 }

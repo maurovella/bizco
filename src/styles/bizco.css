@@ -1,0 +1,104 @@
+/* styles/bizco.css — Capa B (Bizco mode).
+   Efectos graduales y REVERSIBLES. Se aplican a <body>; el overlay 👀 cuelga
+   de <html> (hermano de body) para no desenfocarse. Nunca tocan el zoom. */
+
+/* Transición suave al entrar y, sobre todo, al recuperarse (volver a nivel 0). */
+body {
+  transition: filter 0.6s ease, transform 0.6s ease;
+}
+
+/* ---------- Nivel 1 — aviso sutil ---------- */
+/* Sin distorsión: ícono 👀 pulsando + cartel "Estás mal sentado, ¡acomodate!". */
+html.bizco-nivel-1 #bizco-ojos {
+  opacity: 1;
+  animation: bizco-pulse 1.4s ease-in-out infinite;
+}
+html.bizco-nivel-1 #bizco-aviso {
+  opacity: 1;
+}
+
+/* ---------- Nivel 2 — el mundo empieza a torcerse ---------- */
+html.bizco-nivel-2 body {
+  filter: blur(2px) saturate(1.2);
+  transform: skewX(-2deg) rotate(-1deg);
+}
+html.bizco-nivel-2 #bizco-ojos {
+  opacity: 1;
+  font-size: 64px;
+  animation: bizco-wiggle 0.9s ease-in-out infinite;
+}
+html.bizco-nivel-2 #bizco-aviso {
+  opacity: 1;
+}
+
+/* ---------- Nivel 3 — caos psicodélico + "visión bizca" ---------- */
+/* blur fuerte + doble visión cruzada (drop-shadows opuestos rojo/cian) + hue. */
+html.bizco-nivel-3 body {
+  filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
+    drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(0deg);
+  animation: bizco-shake 0.32s linear infinite, bizco-hue 4s linear infinite;
+}
+html.bizco-nivel-3 #bizco-ojos {
+  opacity: 1;
+  font-size: 84px;
+  animation: bizco-wiggle 0.45s ease-in-out infinite;
+}
+html.bizco-nivel-3 #bizco-aviso {
+  opacity: 1;
+  animation: bizco-pulse 0.7s ease-in-out infinite;
+}
+
+/* ---------- Overlay (ícono 👀 + aviso). Inmune a los filtros de body. ---------- */
+#bizco-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* no bloquea clics en la página */
+  z-index: 2147483647; /* por encima de todo */
+}
+#bizco-ojos {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  font-size: 44px;
+  line-height: 1;
+  opacity: 0; /* oculto en nivel 0 */
+  transition: opacity 0.4s ease, font-size 0.4s ease;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+#bizco-aviso {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 14px 26px;
+  border-radius: 999px;
+  background: rgba(20, 20, 30, 0.85);
+  color: #fff;
+  font: 700 22px/1 system-ui, sans-serif;
+  letter-spacing: 0.5px;
+  opacity: 0; /* solo desde nivel 2 */
+  transition: opacity 0.4s ease;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes bizco-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+@keyframes bizco-wiggle {
+  0%, 100% { transform: rotate(-12deg); }
+  50% { transform: rotate(12deg); }
+}
+@keyframes bizco-shake {
+  0% { transform: translate(0, 0) rotate(-1deg); }
+  25% { transform: translate(-6px, 3px) rotate(1deg); }
+  50% { transform: translate(5px, -4px) rotate(-1.5deg); }
+  75% { transform: translate(-4px, -2px) rotate(1.5deg); }
+  100% { transform: translate(0, 0) rotate(-1deg); }
+}
+@keyframes bizco-hue {
+  from { filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
+    drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(0deg); }
+  to { filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
+    drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(360deg); }
+}

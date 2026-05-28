@@ -6,12 +6,20 @@
  * cheaply ignore messages that aren't meant for it.
  */
 
-export type MessageTarget = 'background' | 'offscreen' | 'popup'
+export type MessageTarget = 'background' | 'offscreen' | 'popup' | 'content'
 
 export interface CameraStatus {
   active: boolean
-  /** Number of frames successfully delivered to the backend this session. */
-  framesSent: number
+  /** Estado del permiso de cámara (lo reporta el offscreen al intentar abrirla). */
+  permiso?: 'ok' | 'denegado' | 'desconocido'
+  /** Último ancho facial suavizado (px), proxy de distancia. */
+  ancho?: number
+  /** Nivel Bizco actual 0..3 (Capa B). */
+  nivel?: number
+  /** True si la postura está encorvada (hombros a la altura del mentón). */
+  encorvado?: boolean
+  /** Separación normalizada hombros-mentón (debug/calibración). */
+  sep?: number
   /** Last error message, if any. */
   error?: string
 }
@@ -23,11 +31,27 @@ export type Message =
   | { type: 'STOP_CAMERA'; target: 'background' }
   // popup -> background: ask for the current status
   | { type: 'GET_STATUS'; target: 'background' }
-  // background -> offscreen: begin/stop capturing
-  | { type: 'OFFSCREEN_START'; target: 'offscreen' }
+  // popup -> background: arrancar calibración (curva de 1 punto)
+  | { type: 'CALIBRAR'; target: 'background' }
+  // popup/options -> background: modo demo (inyecta ancho falso; null = off)
+  | { type: 'SET_DEMO'; target: 'background'; ancho: number | null }
+  // background -> offscreen: begin/stop capturing (el offscreen no puede leer
+  // chrome.storage, así que el background le pasa la config por mensaje)
+  | { type: 'OFFSCREEN_START'; target: 'offscreen'; umbralEncorvado: number }
   | { type: 'OFFSCREEN_STOP'; target: 'offscreen' }
+  // background -> offscreen: actualizar config en caliente (ej. desde options)
+  | { type: 'OFFSCREEN_CONFIG'; target: 'offscreen'; umbralEncorvado: number }
+  // background -> offscreen: promediar ancho ~1s y devolver OFFSCREEN_CALIBRADO
+  | { type: 'OFFSCREEN_CALIBRAR'; target: 'offscreen' }
   // offscreen -> background: status updates from the capture loop
   | { type: 'OFFSCREEN_STATUS'; target: 'background'; status: CameraStatus }
+  // offscreen -> background: ancho facial suavizado (proxy de distancia)
+  // + postura (encorvado) detectada con los hombros vs el mentón
+  | { type: 'FACE'; target: 'background'; ancho: number; encorvado: boolean; sep?: number }
+  // offscreen -> background: ancho promedio capturado durante la calibración
+  | { type: 'OFFSCREEN_CALIBRADO'; target: 'background'; ancho: number }
+  // background -> content: nivel Bizco a aplicar en la página (Capa B)
+  | { type: 'BIZCO_LEVEL'; target: 'content'; nivel: number }
 
 export type StatusResponse = CameraStatus
 

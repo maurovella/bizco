@@ -21,3 +21,9 @@ npm-debug.log*
 
 # Vite
 .vite/
+
+# Claude Code (local tooling)
+.claude/
+
+# Dev backend captured frames
+dev-backend/*.jpg

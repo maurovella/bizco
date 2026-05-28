@@ -19,6 +19,17 @@
       }
       #status.ok { background: #e3f7ec; color: #0b6b3a; }
       #status.err { background: #fdecea; color: #b00020; }
+      #postura {
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 8px;
+        background: #f1f1f1;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      #postura.ok { background: #e3f7ec; color: #0b6b3a; }
+      #postura.mal { background: #fdecea; color: #b00020; }
+      #postura small { display: block; margin-top: 6px; font-weight: 400; opacity: 0.8; }
       button {
         margin-top: 16px;
         padding: 10px 16px;
@@ -33,9 +44,11 @@
   </head>
   <body>
     <h1>Bizco camera access</h1>
-    <p>Bizco needs your camera to stream frames to the backend. Click below and
-      choose <strong>Allow</strong> in the browser prompt.</p>
+    <p>Bizco usa tu cámara <strong>100% en tu equipo</strong> para estimar tu
+      distancia y postura. Hacé clic y elegí <strong>Permitir</strong> en el
+      prompt del navegador.</p>
     <div id="status">Requesting camera…</div>
+    <div id="postura">Postura: — <small>Activá Bizco en el popup para verla.</small></div>
     <video id="preview" autoplay muted playsinline></video>
     <button id="retry" hidden>Request again</button>
     <script type="module" src="./permission.ts"></script>
