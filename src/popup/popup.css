@@ -1,0 +1,87 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.popup {
+  width: 260px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.status .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #b00020;
+}
+
+.status.on .dot {
+  background: #18a058;
+}
+
+.counter {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.error {
+  margin: 0;
+  font-size: 12px;
+  color: #b00020;
+  word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+button.link {
+  flex: none;
+  border: none;
+  text-decoration: underline;
+  font-size: 12px;
+  padding: 4px 0;
+  text-align: left;
+}
+
+.note {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
