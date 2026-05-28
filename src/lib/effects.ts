@@ -4,7 +4,7 @@
 // con "cuánto tiempo sostenido" estuviste demasiado cerca.
 
 /** A partir de cuánto exceso de proximidad apuntamos a cada nivel. */
-const EXCESO_NIVEL_2 = 0.06 // 6% más cerca que el umbral
+const EXCESO_NIVEL_2 = 0.1 // 10% más cerca que el umbral (nivel 1 más ancho)
 const EXCESO_NIVEL_3 = 0.18 // 18% más cerca que el umbral
 
 /**

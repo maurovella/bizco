@@ -8,6 +8,13 @@
 
 export type MessageTarget = 'background' | 'offscreen' | 'popup' | 'content'
 
+/**
+ * Por qué se disparó el caos (nivel 3), para elegir el mensaje del cartel:
+ * - 'cerca'   → estás demasiado pegado a la pantalla → "alejate"
+ * - 'postura' → te quedaste en "acomodate" demasiado tiempo → "acomodate te dije"
+ */
+export type MotivoBizco = 'cerca' | 'postura'
+
 export interface CameraStatus {
   active: boolean
   /** Estado del permiso de cámara (lo reporta el offscreen al intentar abrirla). */
@@ -51,7 +58,8 @@ export type Message =
   // offscreen -> background: ancho promedio capturado durante la calibración
   | { type: 'OFFSCREEN_CALIBRADO'; target: 'background'; ancho: number }
   // background -> content: nivel Bizco a aplicar en la página (Capa B)
-  | { type: 'BIZCO_LEVEL'; target: 'content'; nivel: number }
+  // motivo solo importa en nivel 3 (elige el mensaje del cartel).
+  | { type: 'BIZCO_LEVEL'; target: 'content'; nivel: number; motivo?: MotivoBizco }
 
 export type StatusResponse = CameraStatus
 

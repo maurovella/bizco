@@ -4,17 +4,23 @@
  * vía una clase en <html> + un overlay. NUNCA toca el zoom (eso es Capa A).
  * Los efectos visuales viven en styles/bizco.css.
  */
-import { isFor, type Message } from '@/lib/messages'
+import { isFor, type Message, type MotivoBizco } from '@/lib/messages'
 
 let nivelActual = -1
+let motivoActual: MotivoBizco | undefined
 let overlay: HTMLElement | null = null
 let avisoText: HTMLElement | null = null
 
-// Mensaje del cartel según el nivel (vive ARRIBA A LA DERECHA, junto a los ojos).
-const AVISO: Record<number, string> = {
-  1: 'Ojo… te estás encorvando',
-  2: '¡Acomodate! Estás mal sentado',
-  3: '¡PARÁ! Alejate de la pantalla',
+// Mensaje del cartel (vive ARRIBA A LA DERECHA, junto a los ojos). En el caos
+// (nivel 3) el texto cambia según el motivo: muy cerca → "alejate"; quedarse
+// trabado en "acomodate" → "te dije".
+function textoAviso(nivel: number, motivo?: MotivoBizco): string {
+  if (nivel === 1) return 'Ojo… te estás encorvando'
+  if (nivel === 2) return '¡Acomodate! Estás mal sentado'
+  if (nivel === 3) {
+    return motivo === 'postura' ? '¡Acomodate te dije!' : '¡PARÁ! Alejate de la pantalla'
+  }
+  return ''
 }
 
 // Ojos bizcos de la marca (pupilas cruzadas hacia adentro). SVG inline: anda en
@@ -46,13 +52,16 @@ function asegurarOverlay(): HTMLElement {
   return el
 }
 
-function aplicarNivel(nivel: number): void {
-  if (nivel === nivelActual) return
-  console.log('[bizco][content] nivel →', nivel)
+function aplicarNivel(nivel: number, motivo?: MotivoBizco): void {
+  // Re-renderiza si cambia el nivel O el motivo (mismo nivel 3 puede cambiar de
+  // "alejate" a "acomodate te dije").
+  if (nivel === nivelActual && motivo === motivoActual) return
+  console.log('[bizco][content] nivel →', nivel, motivo ?? '')
   nivelActual = nivel
+  motivoActual = motivo
   asegurarOverlay()
 
-  if (avisoText) avisoText.textContent = AVISO[nivel] ?? ''
+  if (avisoText) avisoText.textContent = textoAviso(nivel, motivo)
 
   const root = document.documentElement
   // Reemplazar la clase de nivel (0..3); la transición CSS suaviza el cambio.
@@ -62,5 +71,5 @@ function aplicarNivel(nivel: number): void {
 
 chrome.runtime.onMessage.addListener((message: Message) => {
   if (!isFor(message, 'content')) return
-  if (message.type === 'BIZCO_LEVEL') aplicarNivel(message.nivel)
+  if (message.type === 'BIZCO_LEVEL') aplicarNivel(message.nivel, message.motivo)
 })

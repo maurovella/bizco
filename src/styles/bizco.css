@@ -84,7 +84,8 @@ html.bizco-nivel-1 #bizco-ojos {
    ============================================================ */
 html.bizco-nivel-2 body {
   filter: blur(2px) saturate(1.3);
-  transform: skewX(-2deg) rotate(-1deg);
+  /* Además del blur, un vaivén lento: la página "respira" torcida. */
+  animation: bizco-sway 1.7s ease-in-out infinite;
 }
 html.bizco-nivel-2 #bizco-hud {
   background: #ff5a3c;
@@ -139,6 +140,11 @@ html.bizco-nivel-3 #bizco-flash {
   0%, 100% { transform: translate(0, 0) rotate(0); }
   25% { transform: translate(-2px, 1px) rotate(-2deg); }
   75% { transform: translate(2px, -1px) rotate(2deg); }
+}
+/* Vaivén del nivel 2 ("acomodate"): movimiento lento, sin ser caos todavía. */
+@keyframes bizco-sway {
+  0%, 100% { transform: skewX(-2deg) rotate(-1deg) translateX(0); }
+  50% { transform: skewX(2deg) rotate(1deg) translateX(5px); }
 }
 @keyframes bizco-hue {
   from {

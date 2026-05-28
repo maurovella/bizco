@@ -1,4 +1,4 @@
-import { isFor, type CameraStatus, type Message } from '@/lib/messages'
+import { isFor, type CameraStatus, type Message, type MotivoBizco } from '@/lib/messages'
 import { nivelBizco } from '@/lib/effects'
 import { derivarUmbral, getSettings, setSettings } from '@/lib/storage'
 
@@ -12,12 +12,14 @@ const OFFSCREEN_URL = 'src/offscreen/offscreen.html'
 // --- Muestreo Capa B ---
 const EFECTO_SAMPLE_MS = 750 // tomar 1 muestra de efectos cada 0.75s
 const EFECTO_VENTANA = 3 // promediar las últimas 3 muestras antes de activar
+const MS_ACOMODATE_CHAOS = 3000 // si te quedás >3s en "acomodate" (nivel 2), caos
 
 let status: CameraStatus = { active: false }
 let demoAncho: number | null = null // modo demo: ancho simulado
 
 // --- Estado Capa B ---
 let cercaDesde = 0 // timestamp en que empezó la mala postura (0 = no)
+let nivel2Desde = 0 // timestamp en que entró al nivel "acomodate" (0 = no)
 let ultimaMuestra = 0
 let ultimoNivel = 0
 let bufAncho: number[] = []
@@ -51,6 +53,7 @@ async function stopCamera(): Promise<void> {
   }
   status = { ...status, active: false }
   cercaDesde = 0
+  nivel2Desde = 0
   ultimoNivel = 0
   bufAncho = []
   bufEncorvado = []
@@ -65,9 +68,9 @@ async function pestanaActiva(): Promise<chrome.tabs.Tab | undefined> {
   return tab
 }
 
-function enviarNivel(tabId: number, nivel: number): void {
+function enviarNivel(tabId: number, nivel: number, motivo?: MotivoBizco): void {
   chrome.tabs
-    .sendMessage<Message>(tabId, { type: 'BIZCO_LEVEL', target: 'content', nivel })
+    .sendMessage<Message>(tabId, { type: 'BIZCO_LEVEL', target: 'content', nivel, motivo })
     .catch(() => {}) // la pestaña puede no tener content script (chrome://, etc.)
 }
 
@@ -97,17 +100,33 @@ async function aplicarBizco(ancho: number, encorvado: boolean, ahora: number): P
   }
   const msSostenido = cercaDesde === 0 ? 0 : ahora - cercaDesde
   const nivel = nivelBizco(anchoProm, umbralBizco, msSostenido, encorvadoMayoria)
-  status.nivel = nivel
 
-  if (nivel !== ultimoNivel) {
+  // Límite de tiempo en "acomodate" (nivel 2): si te quedás trabado ahí más de
+  // 3s sin acomodarte, escalamos al caos con un mensaje más insistente. El caos
+  // por proximidad (nivel 3 directo) mantiene el motivo 'cerca' → "alejate".
+  let nivelFinal = nivel
+  let motivo: MotivoBizco = 'cerca'
+  if (nivel === 2) {
+    if (nivel2Desde === 0) nivel2Desde = ahora
+    if (ahora - nivel2Desde > MS_ACOMODATE_CHAOS) {
+      nivelFinal = 3
+      motivo = 'postura' // "¡Acomodate te dije!"
+    }
+  } else {
+    nivel2Desde = 0
+  }
+
+  status.nivel = nivelFinal
+
+  if (nivelFinal !== ultimoNivel) {
     console.log(
-      `[bizco][bg] nivel ${ultimoNivel} → ${nivel} (ancho ${Math.round(anchoProm)}/${umbralBizco}, encorvado ${encorvadoMayoria})`,
+      `[bizco][bg] nivel ${ultimoNivel} → ${nivelFinal} (ancho ${Math.round(anchoProm)}/${umbralBizco}, encorvado ${encorvadoMayoria}, motivo ${motivo})`,
     )
-    ultimoNivel = nivel
+    ultimoNivel = nivelFinal
   }
 
   const tab = await pestanaActiva()
-  if (tab?.id) enviarNivel(tab.id, nivel)
+  if (tab?.id) enviarNivel(tab.id, nivelFinal, motivo)
 }
 
 /** Entrada principal: ancho facial + postura nuevos (reales o de demo). */
