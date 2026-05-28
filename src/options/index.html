@@ -4,10 +4,62 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bizco — Configuración</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--bizco-font-ui), system-ui, sans-serif;
+        color: var(--bizco-ink);
+        background: var(--bizco-paper);
+        background-image: radial-gradient(var(--bizco-paper-2) 1.4px, transparent 1.4px);
+        background-size: 20px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+      #app {
+        width: 100%;
+        max-width: 460px;
+        text-align: center;
+        background: #fff;
+        border: var(--bizco-border);
+        border-radius: var(--bizco-r-lg);
+        box-shadow: var(--bizco-shadow);
+        padding: 36px 28px;
+      }
+      .mark { width: 84px; height: 84px; }
+      h1 {
+        font-family: var(--bizco-font-display), Georgia, serif;
+        font-weight: 900;
+        font-size: 40px;
+        letter-spacing: -1.5px;
+        margin: 12px 0 6px;
+      }
+      h1 .dot { color: var(--bizco-coral); }
+      p {
+        margin: 0;
+        font-family: var(--bizco-font-display), Georgia, serif;
+        font-style: italic;
+        font-size: 17px;
+        color: var(--bizco-ink-soft);
+      }
+    </style>
   </head>
   <body>
     <main id="app">
-      <h1>Bizco 👀</h1>
+      <svg class="mark" viewBox="0 0 120 120" aria-label="Bizco" role="img">
+        <ellipse cx="44" cy="60" rx="30" ry="33" fill="#FBF5E9" stroke="#1A1714" stroke-width="5" />
+        <ellipse cx="88" cy="60" rx="30" ry="33" fill="#FBF5E9" stroke="#1A1714" stroke-width="5" />
+        <circle cx="56" cy="64" r="12" fill="#1A1714" />
+        <circle cx="76" cy="64" r="12" fill="#1A1714" />
+        <circle cx="52" cy="59" r="3.5" fill="#FBF5E9" />
+        <circle cx="72" cy="59" r="3.5" fill="#FBF5E9" />
+        <path d="M22 30 q20 -10 40 -2" fill="none" stroke="#1A1714" stroke-width="5" stroke-linecap="round" />
+        <path d="M70 28 q20 -8 40 2" fill="none" stroke="#1A1714" stroke-width="5" stroke-linecap="round" />
+      </svg>
+      <h1>b<span class="dot">i</span>zco</h1>
       <p>El asistente de configuración llega en la Fase 5.</p>
     </main>
     <script type="module" src="./options.ts"></script>

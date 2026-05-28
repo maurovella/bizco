@@ -7,6 +7,13 @@
 const EXCESO_NIVEL_2 = 0.06 // 6% más cerca que el umbral
 const EXCESO_NIVEL_3 = 0.18 // 18% más cerca que el umbral
 
+/**
+ * Zona "muy dañina": estás peligrosamente pegado a la pantalla. Apenas cruzás
+ * este exceso saltamos DIRECTO al caos (nivel 3), sin esperar el tiempo
+ * sostenido — el daño ocular ya está pasando, no hay que ser sutil.
+ */
+const EXCESO_DANINO = 0.2 // 20% más cerca que el umbral → caos instantáneo
+
 /** Cuánto tiempo sostenido hace falta para escalar (evita disparos instantáneos). */
 const MS_NIVEL_2 = 1200
 const MS_NIVEL_3 = 2500
@@ -34,6 +41,10 @@ export function nivelBizco(
 
   // Nivel objetivo por proximidad: cuanto más cerca, más alto.
   const exceso = cerca ? (ancho - umbral) / umbral : 0
+
+  // Zona muy dañina: estás demasiado pegado → caos YA, salteamos el tiempo.
+  if (exceso > EXCESO_DANINO) return 3
+
   let objetivo = 1
   if (exceso > EXCESO_NIVEL_2) objetivo = 2
   if (exceso > EXCESO_NIVEL_3) objetivo = 3

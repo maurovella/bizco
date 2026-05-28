@@ -5,6 +5,7 @@
 // A full tab stays open, so the user can actually click "Allow". Once granted,
 // the permission sticks for the extension origin and the offscreen document
 // reuses it without prompting.
+import './permission.css'
 import type { CameraStatus, Message, StatusResponse } from '@/lib/messages'
 
 const statusEl = document.getElementById('status') as HTMLDivElement
@@ -14,18 +15,18 @@ const posturaEl = document.getElementById('postura') as HTMLDivElement
 
 async function request(): Promise<void> {
   statusEl.className = ''
-  statusEl.textContent = 'Requesting camera…'
+  statusEl.textContent = 'Pidiendo acceso a la cámara…'
   retryEl.hidden = true
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-    // Show a brief preview so the user sees it works, then release the stream
-    // (the offscreen document opens its own once you press Start).
+    // Preview corto para que se vea que anda; el documento offscreen abre su
+    // propia pista cuando tocás "Activar" en el popup.
     videoEl.srcObject = stream
     statusEl.className = 'ok'
-    statusEl.textContent = 'Camera permission granted ✓  You can close this tab and press Start in the popup.'
+    statusEl.textContent = 'Permiso concedido ✓  Cerrá esta pestaña y tocá Activar en el popup.'
   } catch (err) {
     statusEl.className = 'err'
-    statusEl.textContent = `Camera permission failed: ${String(err)}`
+    statusEl.textContent = `No se pudo acceder a la cámara: ${String(err)}`
     retryEl.hidden = false
   }
 }
@@ -63,3 +64,30 @@ retryEl.addEventListener('click', () => void request())
 void request()
 void pollPostura()
 window.setInterval(() => void pollPostura(), 400)
+
+// ---- Gesto de marca: los ojos del logo siguen el cursor y se cruzan al acercarse ----
+const mark = document.getElementById('mark') as SVGSVGElement | null
+const pL = document.getElementById('pL') as SVGCircleElement | null
+const pR = document.getElementById('pR') as SVGCircleElement | null
+
+if (mark && pL && pR) {
+  const baseLeft = { x: 44, y: 62 }
+  const baseRight = { x: 88, y: 62 }
+
+  window.addEventListener('mousemove', (event) => {
+    const rect = mark.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const dx = event.clientX - centerX
+    const dy = event.clientY - centerY
+    const near = Math.max(0, 1 - Math.hypot(dx, dy) / 420)
+    const angle = Math.atan2(dy, dx)
+    const reach = 7 * (1 - near)
+    const cross = 9 * near
+
+    pL.setAttribute('cx', String(baseLeft.x + Math.cos(angle) * reach + cross))
+    pL.setAttribute('cy', String(baseLeft.y + Math.sin(angle) * reach))
+    pR.setAttribute('cx', String(baseRight.x + Math.cos(angle) * reach - cross))
+    pR.setAttribute('cy', String(baseRight.y + Math.sin(angle) * reach))
+  })
+}

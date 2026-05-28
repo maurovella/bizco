@@ -1,6 +1,11 @@
+@import "../styles/tokens.css";
+
 :root {
-  color-scheme: light dark;
-  font-family: system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -8,80 +13,200 @@ body {
 }
 
 .popup {
-  width: 260px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  width: 300px;
+  font-family: var(--bizco-font-ui);
+  color: var(--bizco-ink);
+  background: var(--bizco-paper);
+  /* Trama de puntos: el "papel óptico" de la marca. */
+  background-image: radial-gradient(var(--bizco-paper-2) 1.2px, transparent 1.2px);
+  background-size: 16px 16px;
 }
 
-h1 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.status {
+/* ---------- Header coral ---------- */
+.hd {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bizco-coral);
+  border-bottom: var(--bizco-border);
 }
 
-.status .dot {
-  width: 10px;
-  height: 10px;
+.wordmark {
+  font-family: var(--bizco-font-display);
+  font-weight: 900;
+  font-size: 26px;
+  letter-spacing: -1px;
+  color: var(--bizco-paper);
+  line-height: 1;
+}
+
+.i-eye {
+  position: relative;
+}
+
+.pill {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 11.5px;
+  padding: 5px 10px;
+  border-radius: var(--bizco-r-pill);
+  border: 2px solid var(--bizco-ink);
+  white-space: nowrap;
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #b00020;
+  background: currentColor;
 }
 
-.status.on .dot {
-  background: #18a058;
+.pill--ok {
+  background: var(--bizco-teal);
+  color: var(--bizco-paper);
 }
 
-.counter {
+.pill--alert {
+  background: var(--bizco-paper);
+  color: var(--bizco-coral-dk);
+}
+
+.pill--off {
+  background: var(--bizco-paper);
+  color: var(--bizco-ink);
+}
+
+/* ---------- Body ---------- */
+.body {
+  padding: 16px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tag {
   margin: 0;
-  font-size: 13px;
-  opacity: 0.8;
+  font-family: var(--bizco-font-display);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--bizco-ink-soft);
 }
 
+/* ---------- Stats ---------- */
+.stats {
+  background: #fff;
+  border: var(--bizco-border);
+  border-radius: var(--bizco-r-md);
+  box-shadow: var(--bizco-shadow);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.stat + .stat {
+  border-top: 1px dashed var(--bizco-paper-2);
+}
+
+.stat b {
+  font-weight: 800;
+}
+
+.stat .num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Error ---------- */
 .error {
   margin: 0;
   font-size: 12px;
-  color: #b00020;
+  font-weight: 600;
+  color: var(--bizco-paper);
+  background: var(--bizco-coral-dk);
+  border: 2px solid var(--bizco-ink);
+  border-radius: var(--bizco-r-sm);
+  padding: 8px 10px;
   word-break: break-word;
 }
 
+/* ---------- Botones sticker ---------- */
 .actions {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
-button {
+.btn {
   flex: 1;
-  padding: 8px;
-  border: 1px solid currentColor;
-  border-radius: 6px;
-  background: transparent;
+  font-family: var(--bizco-font-ui);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--bizco-ink);
+  background: var(--bizco-sun);
+  border: var(--bizco-border);
+  border-radius: var(--bizco-r-pill);
+  padding: 10px 16px;
   cursor: pointer;
-  font-size: 14px;
+  box-shadow: var(--bizco-shadow);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
 
-button:disabled {
-  opacity: 0.4;
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 var(--bizco-ink);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--bizco-ink);
+}
+
+.btn:disabled {
+  opacity: 0.45;
   cursor: default;
+  box-shadow: var(--bizco-shadow-sm);
 }
 
-button.link {
+.btn--ok {
+  background: var(--bizco-teal);
+  color: var(--bizco-paper);
+}
+
+.btn--alert {
+  background: var(--bizco-coral);
+  color: var(--bizco-paper);
+}
+
+.btn--calibrar {
   flex: none;
-  border: none;
-  text-decoration: underline;
-  font-size: 12px;
-  padding: 4px 0;
-  text-align: left;
+  width: 100%;
+  background: var(--bizco-sun);
+  color: var(--bizco-ink);
 }
 
-.note {
-  margin: 0;
+/* ---------- Link permiso ---------- */
+.link {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  font-family: var(--bizco-font-ui);
+  font-weight: 700;
   font-size: 12px;
-  opacity: 0.8;
+  color: var(--bizco-ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: var(--bizco-coral-dk);
 }

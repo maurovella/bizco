@@ -1,86 +1,125 @@
 /* styles/bizco.css — Capa B (Bizco mode).
-   Efectos graduales y REVERSIBLES. Se aplican a <body>; el overlay 👀 cuelga
-   de <html> (hermano de body) para no desenfocarse. Nunca tocan el zoom. */
+   Efectos graduales y REVERSIBLES. Se aplican a <body>; el overlay (badge de
+   ojos+cartel arriba a la derecha + flash de color) cuelga de <html> (hermano
+   de body) para no desenfocarse. Nunca tocan el zoom.
+
+   Colores de la marca bizco van inline (hex): el content script se inyecta en
+   páginas ajenas y no podemos depender de variables CSS ni fuentes externas. */
 
 /* Transición suave al entrar y, sobre todo, al recuperarse (volver a nivel 0). */
 body {
   transition: filter 0.6s ease, transform 0.6s ease;
 }
 
-/* ---------- Nivel 1 — aviso sutil ---------- */
-/* Sin distorsión: ícono 👀 pulsando + cartel "Estás mal sentado, ¡acomodate!". */
-html.bizco-nivel-1 #bizco-ojos {
-  opacity: 1;
-  animation: bizco-pulse 1.4s ease-in-out infinite;
-}
-html.bizco-nivel-1 #bizco-aviso {
-  opacity: 1;
-}
-
-/* ---------- Nivel 2 — el mundo empieza a torcerse ---------- */
-html.bizco-nivel-2 body {
-  filter: blur(2px) saturate(1.2);
-  transform: skewX(-2deg) rotate(-1deg);
-}
-html.bizco-nivel-2 #bizco-ojos {
-  opacity: 1;
-  font-size: 64px;
-  animation: bizco-wiggle 0.9s ease-in-out infinite;
-}
-html.bizco-nivel-2 #bizco-aviso {
-  opacity: 1;
-}
-
-/* ---------- Nivel 3 — caos psicodélico + "visión bizca" ---------- */
-/* blur fuerte + doble visión cruzada (drop-shadows opuestos rojo/cian) + hue. */
-html.bizco-nivel-3 body {
-  filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
-    drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(0deg);
-  animation: bizco-shake 0.32s linear infinite, bizco-hue 4s linear infinite;
-}
-html.bizco-nivel-3 #bizco-ojos {
-  opacity: 1;
-  font-size: 84px;
-  animation: bizco-wiggle 0.45s ease-in-out infinite;
-}
-html.bizco-nivel-3 #bizco-aviso {
-  opacity: 1;
-  animation: bizco-pulse 0.7s ease-in-out infinite;
-}
-
-/* ---------- Overlay (ícono 👀 + aviso). Inmune a los filtros de body. ---------- */
+/* ============================================================
+   OVERLAY — badge (ojos + cartel) arriba a la derecha + flash
+   Inmune a los filtros de body porque cuelga de <html>.
+   ============================================================ */
 #bizco-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none; /* no bloquea clics en la página */
   z-index: 2147483647; /* por encima de todo */
 }
-#bizco-ojos {
+
+/* Badge sticker: ojos de la marca + cartel, juntos arriba a la derecha. */
+#bizco-hud {
   position: fixed;
   top: 16px;
-  right: 20px;
-  font-size: 44px;
-  line-height: 1;
-  opacity: 0; /* oculto en nivel 0 */
-  transition: opacity 0.4s ease, font-size 0.4s ease;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
-}
-#bizco-aviso {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 14px 26px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 16px 8px 11px;
+  border: 3px solid #1a1714;
   border-radius: 999px;
-  background: rgba(20, 20, 30, 0.85);
-  color: #fff;
-  font: 700 22px/1 system-ui, sans-serif;
-  letter-spacing: 0.5px;
-  opacity: 0; /* solo desde nivel 2 */
-  transition: opacity 0.4s ease;
+  box-shadow: 0 4px 0 #1a1714;
+  background: #ffc94d;
+  color: #1a1714;
+  font: 800 14px/1.1 "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.2px;
+  max-width: 340px;
+  /* Oculto en nivel 0; entra desde arriba al activarse. */
+  opacity: 0;
+  transform: translateY(-14px) scale(0.95);
+  transition: opacity 0.35s ease, transform 0.35s ease, background 0.3s ease,
+    color 0.3s ease;
+}
+html.bizco-nivel-1 #bizco-hud,
+html.bizco-nivel-2 #bizco-hud,
+html.bizco-nivel-3 #bizco-hud {
+  opacity: 1;
+  transform: none;
 }
 
-/* ---------- Keyframes ---------- */
+#bizco-ojos {
+  flex: none;
+  display: inline-flex;
+  line-height: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+#bizco-aviso {
+  white-space: nowrap;
+}
+
+/* Flash de color a pantalla completa (solo nivel 3): el "quilombo" de colores. */
+#bizco-flash {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
+
+/* ============================================================
+   NIVEL 1 — aviso sutil
+   Sin distorsión de la página: solo el badge (sun) con los ojos pulsando.
+   ============================================================ */
+html.bizco-nivel-1 #bizco-ojos {
+  animation: bizco-pulse 1.4s ease-in-out infinite;
+}
+
+/* ============================================================
+   NIVEL 2 — el mundo empieza a torcerse + badge coral parpadeando
+   ============================================================ */
+html.bizco-nivel-2 body {
+  filter: blur(2px) saturate(1.3);
+  transform: skewX(-2deg) rotate(-1deg);
+}
+html.bizco-nivel-2 #bizco-hud {
+  background: #ff5a3c;
+  color: #fbf5e9;
+  animation: bizco-blink-borde 0.5s steps(1, end) infinite;
+}
+html.bizco-nivel-2 #bizco-ojos {
+  animation: bizco-wiggle 0.7s ease-in-out infinite;
+}
+
+/* ============================================================
+   NIVEL 3 — caos psicodélico + "visión bizca" + fiesta de colores
+   blur fuerte + doble visión cruzada (rojo/cian) + hue girando + temblor,
+   badge arcoíris parpadeando, ojos sacudiéndose y flash de colores full-screen.
+   ============================================================ */
+html.bizco-nivel-3 body {
+  filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
+    drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(0deg);
+  animation: bizco-shake 0.32s linear infinite, bizco-hue 4s linear infinite;
+}
+html.bizco-nivel-3 #bizco-hud {
+  color: #fbf5e9;
+  animation: bizco-arcoiris 0.7s steps(1, end) infinite,
+    bizco-shake-hud 0.3s linear infinite;
+}
+html.bizco-nivel-3 #bizco-ojos {
+  animation: bizco-wiggle 0.4s ease-in-out infinite;
+}
+html.bizco-nivel-3 #bizco-flash {
+  animation: bizco-flash-anim 1s linear infinite;
+}
+
+/* ============================================================
+   Keyframes
+   ============================================================ */
 @keyframes bizco-pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.18); }
@@ -96,9 +135,44 @@ html.bizco-nivel-3 #bizco-aviso {
   75% { transform: translate(-4px, -2px) rotate(1.5deg); }
   100% { transform: translate(0, 0) rotate(-1deg); }
 }
+@keyframes bizco-shake-hud {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  25% { transform: translate(-2px, 1px) rotate(-2deg); }
+  75% { transform: translate(2px, -1px) rotate(2deg); }
+}
 @keyframes bizco-hue {
-  from { filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
-    drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(0deg); }
-  to { filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
-    drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(360deg); }
+  from {
+    filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
+      drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(0deg);
+  }
+  to {
+    filter: blur(3px) drop-shadow(9px 0 0 rgba(255, 0, 80, 0.45))
+      drop-shadow(-9px 0 0 rgba(0, 220, 255, 0.45)) hue-rotate(360deg);
+  }
+}
+
+/* Parpadeo del badge en nivel 2: alterna el color del borde/sombra (coral ↔ sol). */
+@keyframes bizco-blink-borde {
+  0% { border-color: #1a1714; box-shadow: 0 4px 0 #1a1714; }
+  50% { border-color: #ffc94d; box-shadow: 0 0 0 4px rgba(255, 201, 77, 0.6); }
+}
+
+/* Badge arcoíris en nivel 3: salta de color cada paso (efecto "parpadeo"). */
+@keyframes bizco-arcoiris {
+  0% { background: #ff5a3c; }
+  20% { background: #ffc94d; color: #1a1714; }
+  40% { background: #16b8a6; }
+  60% { background: #4d7cff; }
+  80% { background: #b14dff; }
+  100% { background: #ff5a3c; }
+}
+
+/* Flash de colores a pantalla completa: parpadeo cromático del nivel 3. */
+@keyframes bizco-flash-anim {
+  0% { background: #ff5a3c; opacity: 0; }
+  20% { background: #ffc94d; opacity: 0.38; }
+  40% { background: #16b8a6; opacity: 0.1; }
+  60% { background: #4d7cff; opacity: 0.4; }
+  80% { background: #b14dff; opacity: 0.12; }
+  100% { background: #ff5a3c; opacity: 0; }
 }

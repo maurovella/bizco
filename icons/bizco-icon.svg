@@ -1,0 +1,24 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tile -->
+  <rect x="0" y="0" width="128" height="128" rx="30" fill="#FF5A3C"/>
+  <!-- Eye whites -->
+  <g>
+    <ellipse cx="46" cy="62" rx="26" ry="29" fill="#FBF5E9" stroke="#1A1714" stroke-width="6"/>
+    <ellipse cx="92" cy="62" rx="26" ry="29" fill="#FBF5E9" stroke="#1A1714" stroke-width="6"/>
+  </g>
+  <!-- Pupils crossed inward (bizco) -->
+  <g fill="#1A1714">
+    <circle cx="58" cy="66" r="11"/>
+    <circle cx="80" cy="66" r="11"/>
+  </g>
+  <!-- Highlights -->
+  <g fill="#FBF5E9">
+    <circle cx="54" cy="61" r="3.4"/>
+    <circle cx="76" cy="61" r="3.4"/>
+  </g>
+  <!-- Brows -->
+  <g stroke="#1A1714" stroke-width="6" stroke-linecap="round" fill="none">
+    <path d="M30 32 q16 -9 32 -2"/>
+    <path d="M76 30 q16 -7 32 2"/>
+  </g>
+</svg>

@@ -35,7 +35,7 @@ export const DEFAULTS: BizcoSettings = {
   activo: false,
   onboardingCompleto: false,
   curva: [{ ancho: 180, zoom: 1.0 }],
-  umbralBizco: 225,
+  umbralBizco: 261,
   sensibilidad: 0.5,
   umbralEncorvado: 0.12,
   intensidad: 0.6,
@@ -68,13 +68,15 @@ export function onSettingsChanged(cb: (s: BizcoSettings) => void): () => void {
 }
 
 /** Margen de acercamiento (en px de ancho facial) antes de disparar Bizco. */
-export const MARGEN_BIZCO = 0.25
+// 0.45 = tenés que acercarte un 45% respecto del ancho cómodo para que arranque
+// el quilombo. Subido desde 0.25 porque al mínimo movimiento ya blureaba.
+export const MARGEN_BIZCO = 0.45
 
 /**
  * Deriva el umbral Bizco (px) desde el ancho cómodo calibrado.
- * Acercarte un 25% en px ya implica posible encorvamiento, así que a partir
- * de ahí arrancan las alertas y el blur. (El _sensibilidad sigue disponible
- * para ajustes finos futuros; hoy usamos el 25% fijo que pidió el usuario.)
+ * Recién al acercarte un 45% en px arrancan las alertas y el blur — así queda
+ * margen para moverte normal sin que se desconfigure todo. (El _sensibilidad
+ * sigue disponible para ajustes finos futuros; hoy usamos el 45% fijo.)
  */
 export function derivarUmbral(anchoComodo: number, _sensibilidad: number): number {
   return Math.round(anchoComodo * (1 + MARGEN_BIZCO))

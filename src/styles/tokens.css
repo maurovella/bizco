@@ -1,0 +1,47 @@
+/* ============================================================
+   BIZCO — Design Tokens
+   Importá este archivo desde cualquier superficie de UI
+   (popup, permission). El content script usa su propio set
+   prefijado con --bizco- para no pisar estilos de la página.
+   ============================================================ */
+
+@import "./fonts.css";
+
+:root {
+  /* ---- Marca / color ---- */
+  --bizco-paper:      #FBF5E9; /* fondo crema, "papel de cartel óptico" */
+  --bizco-paper-2:    #F2E9D4; /* crema más profundo, para capas */
+  --bizco-ink:        #1A1714; /* tinta casi negra, cálida */
+  --bizco-ink-soft:   #5A5046; /* texto secundario */
+
+  --bizco-coral:      #FF5A3C; /* ALERTA: estás muy cerca / Bizco activo */
+  --bizco-coral-dk:   #E6431F;
+  --bizco-teal:       #16B8A6; /* OK: buena postura / todo en orden */
+  --bizco-teal-dk:    #0E9485;
+  --bizco-sun:        #FFC94D; /* acento juguetón, highlights */
+
+  /* Estados semánticos (usalos por significado, no por color) */
+  --bizco-ok:         var(--bizco-teal);
+  --bizco-warn:       var(--bizco-sun);
+  --bizco-alert:      var(--bizco-coral);
+
+  /* Gradiente "caos" para Bizco nivel 3 */
+  --bizco-chaos: conic-gradient(from 0deg,
+    #FF5A3C, #FFC94D, #16B8A6, #4D7CFF, #B14DFF, #FF5A3C);
+
+  /* ---- Tipografía ---- */
+  --bizco-font-display: "Fraunces", Georgia, serif;
+  --bizco-font-ui:      "Hanken Grotesk", system-ui, sans-serif;
+
+  /* ---- Escala / radios / sombras ---- */
+  --bizco-r-sm: 8px;
+  --bizco-r-md: 14px;
+  --bizco-r-lg: 22px;
+  --bizco-r-pill: 999px;
+
+  --bizco-shadow:    0 4px 0 var(--bizco-ink);   /* sombra "sticker", dura */
+  --bizco-shadow-sm: 0 2px 0 var(--bizco-ink);
+  --bizco-border:    3px solid var(--bizco-ink); /* borde grueso, look juguete */
+
+  --bizco-space: 8px; /* unidad base; multiplicá (8/16/24/32) */
+}
