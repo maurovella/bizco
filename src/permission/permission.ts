@@ -35,7 +35,7 @@ async function request(): Promise<void> {
 function pintarPostura(s: CameraStatus): void {
   if (!s?.active) {
     posturaEl.className = ''
-    posturaEl.innerHTML = 'Postura: — <small>Activá Bizco en el popup para verla.</small>'
+    posturaEl.innerHTML = 'Postura: — <small>Activá Bizcocho en el popup para verla.</small>'
     return
   }
   const mal = (s.nivel ?? 0) > 0 || s.encorvado

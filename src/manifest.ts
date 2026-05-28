@@ -3,7 +3,7 @@ import pkg from '../package.json'
 
 export default defineManifest({
   manifest_version: 3,
-  name: 'Bizco',
+  name: 'Bizcocho',
   version: pkg.version,
   description: pkg.description,
 
@@ -15,7 +15,7 @@ export default defineManifest({
 
   action: {
     default_popup: 'src/popup/index.html',
-    default_title: 'Bizco',
+    default_title: 'Bizcocho',
   },
 
   // Wizard de onboarding + settings re-editables.

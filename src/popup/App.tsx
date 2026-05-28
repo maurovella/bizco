@@ -47,14 +47,14 @@ export function App() {
   const pill = !active
     ? { txt: 'En pausa', cls: 'pill--off' }
     : malaPostura
-      ? { txt: `Bizco nivel ${nivel}`, cls: 'pill--alert' }
+      ? { txt: `Bizcocho nivel ${nivel}`, cls: 'pill--alert' }
       : { txt: 'Postura OK', cls: 'pill--ok' }
 
   return (
     <main className="popup">
       <header className="hd">
         <BizcoEyes size={40} crossBias={crossBias} />
-        <span className="wordmark">b<span className="i-eye">i</span>zco</span>
+        <span className="wordmark">b<span className="i-eye">i</span>zcocho</span>
         <span className={`pill ${pill.cls}`}>
           <span className="pill-dot" />
           {pill.txt}
@@ -65,7 +65,7 @@ export function App() {
         <p className="tag">
           {active
             ? 'Te estoy mirando para que no te pegues a la pantalla.'
-            : 'Activame y te aviso cuando estés quedando bizco.'}
+            : 'Activame y te aviso cuando te pegues mucho a la pantalla.'}
         </p>
 
         {/* Indicadores en vivo (datos reales del motor) */}
@@ -79,7 +79,7 @@ export function App() {
             <b>{status.encorvado ? 'Encorvado 🙇' : 'OK ✅'}</b>
           </div>
           <div className="stat">
-            <span>Nivel Bizco</span>
+            <span>Nivel Bizcocho</span>
             <b className="num">{nivel}</b>
           </div>
         </div>

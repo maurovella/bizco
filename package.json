@@ -1,7 +1,7 @@
 {
   "name": "bizco",
   "version": "0.1.0",
-  "description": "Bizco Chrome extension (Manifest V3) — React + Vite + CRXJS",
+  "description": "Bizcocho Chrome extension (Manifest V3) — React + Vite + CRXJS",
   "type": "module",
   "private": true,
   "scripts": {
