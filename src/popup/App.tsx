@@ -7,7 +7,6 @@ function send(message: Message): Promise<StatusResponse> {
 
 export function App() {
   const [status, setStatus] = useState<CameraStatus>({ active: false, framesSent: 0 })
-  const [permissionNote, setPermissionNote] = useState<string>('')
 
   // Poll status while the popup is open so the frame counter stays live.
   useEffect(() => {
@@ -25,18 +24,11 @@ export function App() {
   }, [])
 
   /**
-   * Trigger the camera permission prompt from a visible page. The offscreen
-   * document can't show a prompt, so granting it here authorizes the whole
-   * extension origin first.
+   * Open the dedicated permission tab. Requesting from the popup itself fails
+   * with "Permission dismissed" because clicking the prompt closes the popup.
    */
-  const grantPermission = async () => {
-    try {
-      const s = await navigator.mediaDevices.getUserMedia({ video: true })
-      s.getTracks().forEach((t) => t.stop())
-      setPermissionNote('Camera permission granted ✓')
-    } catch (err) {
-      setPermissionNote(`Permission error: ${String(err)}`)
-    }
+  const grantPermission = () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/permission/index.html') })
   }
 
   const start = async () => setStatus(await send({ type: 'START_CAMERA', target: 'background' }))
@@ -59,8 +51,7 @@ export function App() {
         <button onClick={stop} disabled={!status.active}>Stop</button>
       </div>
 
-      <button className="link" onClick={grantPermission}>Grant camera permission</button>
-      {permissionNote && <p className="note">{permissionNote}</p>}
+      <button className="link" onClick={grantPermission}>Grant camera permission…</button>
     </main>
   )
 }

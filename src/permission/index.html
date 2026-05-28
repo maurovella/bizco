@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bizco · Camera permission</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 480px;
+        margin: 64px auto;
+        padding: 0 16px;
+        line-height: 1.5;
+      }
+      #status {
+        padding: 12px 16px;
+        border-radius: 8px;
+        background: #f1f1f1;
+      }
+      #status.ok { background: #e3f7ec; color: #0b6b3a; }
+      #status.err { background: #fdecea; color: #b00020; }
+      button {
+        margin-top: 16px;
+        padding: 10px 16px;
+        font-size: 15px;
+        border-radius: 6px;
+        border: 1px solid currentColor;
+        background: transparent;
+        cursor: pointer;
+      }
+      video { margin-top: 16px; width: 100%; border-radius: 8px; background: #000; }
+    </style>
+  </head>
+  <body>
+    <h1>Bizco camera access</h1>
+    <p>Bizco needs your camera to stream frames to the backend. Click below and
+      choose <strong>Allow</strong> in the browser prompt.</p>
+    <div id="status">Requesting camera…</div>
+    <video id="preview" autoplay muted playsinline></video>
+    <button id="retry" hidden>Request again</button>
+    <script type="module" src="./permission.ts"></script>
+  </body>
+</html>

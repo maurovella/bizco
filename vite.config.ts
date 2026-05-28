@@ -21,6 +21,7 @@ export default defineConfig({
       // register its HTML entry point explicitly for CRXJS/Vite to build it.
       input: {
         offscreen: resolve(__dirname, 'src/offscreen/offscreen.html'),
+        permission: resolve(__dirname, 'src/permission/index.html'),
       },
     },
   },

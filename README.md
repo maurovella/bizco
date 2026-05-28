@@ -55,8 +55,10 @@ npm run zip          # build + zip into bizco.zip
    ```
 
 2. Load the extension (`dist/`) and open the popup.
-3. Click **Grant camera permission** once — the offscreen document can't show a
-   prompt, so this authorizes the extension origin first.
+3. Click **Grant camera permission…** once. It opens a dedicated tab (the popup
+   can't request it — clicking the prompt closes the popup and dismisses it).
+   Choose **Allow**, then close the tab. The grant sticks for the extension
+   origin and the offscreen document reuses it.
 4. Click **Start**. The frame counter should climb (~1/sec).
 5. The backend logs each frame and writes the latest to
    `dev-backend/last-frame.jpg` — open it to confirm the image arrives.
